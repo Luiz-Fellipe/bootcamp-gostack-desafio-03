@@ -1,8 +1,19 @@
 import { Router } from 'express';
 
+import SessionController from './app/controllers/SessionController';
+import RecipientController from './app/controllers/RecipientController';
+
+import authMiddleware from './app/middlewares/auth';
+
 const routes = new Router();
 
 // Rotas
-routes.get('/', (req, res) => res.json({ message: 'Olá Mundo' }));
+
+routes.post('/sessions', SessionController.store);
+
+routes.use(authMiddleware);
+
+routes.post('/recipients', RecipientController.store);
+routes.put('/recipients/:id', RecipientController.update);
 
 export default routes;
