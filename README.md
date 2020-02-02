@@ -10,22 +10,21 @@
   :warning: Etapa 1/4 do Desafio Final :warning:
 </h3>
 
-<p>Esse desafio é a primeira parte do Desafio Final</p>
-
 <blockquote align="center">“Não espere para plantar, apenas tenha paciência para colher”!</blockquote>
-
 
 <p align="center">
 <a href="#rocket-sobre-o-desafio">Sobre o desafio</a>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
 
 
 ## :rocket: Sobre o desafio
+Esse desafio é a primeira parte do Desafio Final
 
 Início do desenvolvimento de um app para uma transportadora fictícia, o FastFeet.
 
 Nesse primeiro desafio criei algumas funcionalidades básicas que aprendi ao longo das aulas até aqui. Esse projeto será desenvolvido aos poucos até o fim da minha jornada onde terei uma aplicação completa envolvendo back-end, front-end e mobile, que será utilizada para a **certificação do bootcamp**.
 
 ### **Um pouco sobre as ferramentas**
+Durante a resolução do desafio, utilizei as seguintes ferramentas :
 
 - NodeJS
 - Yarn
