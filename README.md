@@ -52,7 +52,7 @@ Criei a permissão para que um usuário se autentique na aplicação utilizando 
 
 Criei a permissão para que os destinatários sejam mantidos (cadastrados/atualizados) na aplicação.
 
-O cadastro de destinatários só pode ser feito por administradores autenticados na aplicação.
-
-O destinatário não pode se autenticar no sistema, ou seja, não possui senha.
+- O cadastro de destinatários só pode ser feito por administradores autenticados na aplicação.
+- Realizei a validação dos dados de entrada
+- O destinatário não pode se autenticar no sistema, ou seja, não possui senha.
 
