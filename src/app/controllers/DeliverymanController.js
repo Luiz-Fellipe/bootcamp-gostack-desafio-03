@@ -1,9 +1,19 @@
 import * as Yup from 'yup';
 import Deliveryman from '../models/Deliveryman';
+import File from '../models/File';
 
 class DeliverymanController {
   async index(req, res) {
-    const deliverymen = await Deliveryman.findAll();
+    const deliverymen = await Deliveryman.findAll({
+      attributes: ['id', 'name', 'email'],
+      include: [
+        {
+          model: File,
+          as: 'avatar',
+          attributes: ['url', 'name', 'path'],
+        },
+      ],
+    });
     return res.json(deliverymen);
   }
 
@@ -33,7 +43,15 @@ class DeliverymanController {
   }
 
   async show(req, res) {
-    const deliveryman = await Deliveryman.findByPk(req.params.id);
+    const deliveryman = await Deliveryman.findByPk(req.params.id, {
+      include: [
+        {
+          model: File,
+          as: 'avatar',
+          attributes: ['url', 'name', 'path'],
+        },
+      ],
+    });
     if (!deliveryman) {
       return res.status(400).json({ error: "deliveryman don't exist" });
     }
@@ -49,6 +67,7 @@ class DeliverymanController {
     const schema = Yup.object().shape({
       name: Yup.string(),
       email: Yup.string().email(),
+      avatar_id: Yup.number(),
     });
 
     if (!(await schema.isValid(req.body))) {
