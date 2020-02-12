@@ -1,8 +1,10 @@
 import * as Yup from 'yup';
 import Delivery from '../models/Delivery';
 import Deliveryman from '../models/Deliveryman';
-import Mail from '../../lib/Mail';
+
 import Recipient from '../models/Recipient';
+import Queue from '../../lib/Queue';
+import CreatingDeliveryMail from '../jobs/CreatingDeliveryMail';
 
 class DeliveryController {
   async index(req, res) {
@@ -45,15 +47,11 @@ class DeliveryController {
       product,
     });
 
-    await Mail.sendMail({
-      to: `${deliveryman.name} <${deliveryman.email}>`,
-      subject: 'Temos uma entrega pra você !',
-      template: 'creatingDelivery',
-      context: {
-        deliveryman: deliveryman.name,
-        recipient: recipient.name,
-        product,
-      },
+    // Envia o email ao entregador
+    await Queue.add(CreatingDeliveryMail.key, {
+      deliveryman,
+      product,
+      recipient,
     });
 
     return res.status(201).json(newDelivery);
@@ -61,6 +59,7 @@ class DeliveryController {
 
   async update(req, res) {
     const delivery = await Delivery.findByPk(req.params.id);
+
     if (!delivery) {
       return res.status(400).json({ error: 'Delivery does not exist ' });
     }
@@ -75,20 +74,23 @@ class DeliveryController {
       return res.status(400).json({ error: 'Validations fails' });
     }
 
-    const deliveryman = await Deliveryman.findByPk(req.body.deliveryman_id, {
-      attributes: ['name', 'email'],
-    });
-
-    if (!deliveryman) {
-      return res.status(400).json({ error: 'Deliveryman does not exist.' });
+    if (req.body.deliveryman_id) {
+      const deliveryman = await Deliveryman.findByPk(req.body.deliveryman_id, {
+        attributes: ['name', 'email'],
+      });
+      if (!deliveryman) {
+        return res.status(400).json({ error: 'Deliveryman does not exist.' });
+      }
     }
 
-    const recipient = await Recipient.findByPk(req.body.recipient_id, {
-      attributes: ['name'],
-    });
+    if (req.body.recipient_id) {
+      const recipient = await Recipient.findByPk(req.body.recipient_id, {
+        attributes: ['name'],
+      });
 
-    if (!recipient) {
-      return res.status(400).json({ error: 'Recipient does not exist.' });
+      if (!recipient) {
+        return res.status(400).json({ error: 'Recipient does not exist.' });
+      }
     }
 
     const newDelivery = await delivery.update(req.body);
