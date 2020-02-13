@@ -97,6 +97,16 @@ class DeliverymanController {
       return res.status(400).json({ error: "deliveryman don't exist" });
     }
 
+    // se o usuário possuir um avatar ele exclui
+    if (deliveryman.avatar_id) {
+      await File.destroy({
+        where: {
+          id: deliveryman.avatar_id,
+        },
+        individualHooks: true,
+      });
+    }
+
     await Deliveryman.destroy({
       where: {
         id: req.params.id,

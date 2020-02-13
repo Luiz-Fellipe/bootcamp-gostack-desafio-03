@@ -1,4 +1,6 @@
 import Sequelize, { Model } from 'sequelize';
+import fs from 'fs';
+import { resolve } from 'path';
 
 class File extends Model {
   static init(sequelize) {
@@ -17,7 +19,13 @@ class File extends Model {
         sequelize,
       }
     );
-
+    // deleta o arquivo da pasta, antes de excluir do banco
+    this.addHook('beforeDestroy', file => {
+      const { path } = file.dataValues;
+      fs.unlinkSync(
+        resolve(__dirname, '..', '..', '..', 'tmp', 'uploads', path)
+      );
+    });
     return this;
   }
 }
