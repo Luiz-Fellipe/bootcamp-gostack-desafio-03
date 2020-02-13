@@ -7,6 +7,7 @@ import DeliverymanController from './app/controllers/DeliverymanController';
 import FileController from './app/controllers/FileController';
 import DeliveryController from './app/controllers/DeliveryController';
 import multerConfig from './config/multer';
+import DeliverymanDeliveryController from './app/controllers/DeliverymanDeliveryController';
 
 import authMiddleware from './app/middlewares/auth';
 
@@ -33,5 +34,7 @@ routes.get('/deliveries', DeliveryController.index);
 routes.post('/deliveries', DeliveryController.store);
 routes.put('/deliveries/:id', DeliveryController.update);
 routes.delete('/deliveries/:id', DeliveryController.delete);
+
+routes.get('/deliveryman/:id/deliveries', DeliverymanDeliveryController.index);
 
 export default routes;

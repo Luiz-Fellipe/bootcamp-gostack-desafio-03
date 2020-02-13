@@ -8,6 +8,18 @@ class Delivery extends Model {
         canceled_at: Sequelize.DATE,
         start_date: Sequelize.DATE,
         end_date: Sequelize.DATE,
+        initiated: {
+          type: Sequelize.VIRTUAL,
+          get() {
+            return !!this.start_date;
+          },
+        },
+        finished: {
+          type: Sequelize.VIRTUAL,
+          get() {
+            return !!this.end_date;
+          },
+        },
       },
       {
         sequelize,
