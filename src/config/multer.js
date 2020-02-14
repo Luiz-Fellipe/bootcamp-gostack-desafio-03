@@ -15,4 +15,18 @@ export default {
       });
     },
   }),
+  fileFilter: (req, file, cb) => {
+    const filetypes = /jpeg|jpg|png/;
+    const mimetype = filetypes.test(file.mimetype);
+    const extName = filetypes.test(extname(file.originalname).toLowerCase());
+
+    if (!(mimetype && extName)) {
+      return cb(
+        new Error(
+          `Error: File upload only supports the following filetypes - ${filetypes}`
+        )
+      );
+    }
+    return cb(null, true);
+  },
 };
