@@ -86,6 +86,13 @@ class DeliverymanController {
       }
     }
 
+    // verificando se o avatar existe
+    const avatar = await File.findByPk(req.body.avatar_id);
+
+    if (!avatar) {
+      return res.status(400).json('Avatar does not exist');
+    }
+
     const newDeliveryman = await deliveryman.update(req.body);
 
     return res.json(newDeliveryman);

@@ -1,5 +1,8 @@
 import { Op } from 'sequelize';
 import Delivery from '../models/Delivery';
+import Deliveryman from '../models/Deliveryman';
+import Recipient from '../models/Recipient';
+import File from '../models/File';
 
 class DeliverymanDeliveryController {
   async index(req, res) {
@@ -22,6 +25,31 @@ class DeliverymanDeliveryController {
             : null,
         canceled_at: null,
       },
+      attributes: [
+        'id',
+        'product',
+        'start_date',
+        'end_date',
+        'finished',
+        'initiated',
+      ],
+      include: [
+        {
+          model: Deliveryman,
+          as: 'deliveryman',
+          attributes: ['id', 'email', 'name'],
+        },
+        {
+          model: Recipient,
+          as: 'recipient',
+          attributes: ['id', 'name', 'city', 'zip_code'],
+        },
+        {
+          model: File,
+          as: 'signature',
+          attributes: ['id', 'path', 'url'],
+        },
+      ],
     });
 
     return res.json(deliveries);
