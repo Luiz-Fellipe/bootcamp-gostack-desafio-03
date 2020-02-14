@@ -1,19 +1,10 @@
 import { Op } from 'sequelize';
-import * as Yup from 'yup';
 import Deliveryman from '../models/Deliveryman';
 import Delivery from '../models/Delivery';
 import File from '../models/File';
 
 class EndDeliveryController {
   async update(req, res) {
-    const schema = Yup.object().shape({
-      signature_id: Yup.number().required(),
-    });
-
-    if (!(await schema.isValid(req.body))) {
-      return res.status(400).json({ error: 'Validations fails' });
-    }
-
     const { deliverymanId, deliveryId } = req.params;
 
     const deliveryman = await Deliveryman.findByPk(deliverymanId);
@@ -39,15 +30,16 @@ class EndDeliveryController {
       });
     }
 
-    // verificando se a assinatura existe
-    const signature = await File.findByPk(req.body.signature_id);
+    // cadastrando imagem da assinatura do entregador
+    const { filename: path, originalname: name } = req.file;
 
-    if (!signature) {
-      return res.status(400).json('Signature does not exist');
-    }
+    const newFile = await File.create({
+      path,
+      name,
+    });
 
     const finishedDelivery = await delivery.update({
-      signature_id: req.body.signature_id,
+      signature_id: newFile.id,
       end_date: new Date(),
     });
 
