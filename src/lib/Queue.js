@@ -1,8 +1,9 @@
 import Bee from 'bee-queue';
 import CreatingDeliveryMail from '../app/jobs/CreatingDeliveryMail';
+import CancelingDeliveryMail from '../app/jobs/CancelingDeliveryMail';
 import redisConfig from '../config/redis';
 
-const jobs = [CreatingDeliveryMail];
+const jobs = [CreatingDeliveryMail, CancelingDeliveryMail];
 
 // Configuração da fila
 class Queue {

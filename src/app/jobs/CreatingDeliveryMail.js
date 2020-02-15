@@ -1,6 +1,6 @@
 import Mail from '../../lib/Mail';
 
-// job que envia um email avisando o provedor do cancelamaneto.
+// job que envia um email avisando o entregador que ele tem uma nova entrega.
 class CreatingDeliveryMail {
   /**
    * key() retorna a chave unica do job.
