@@ -20,6 +20,12 @@ class Delivery extends Model {
             return !!this.end_date;
           },
         },
+        canceled: {
+          type: Sequelize.VIRTUAL,
+          get() {
+            return !!this.canceled_at;
+          },
+        },
       },
       {
         sequelize,

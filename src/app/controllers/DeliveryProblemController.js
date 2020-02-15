@@ -8,6 +8,7 @@ import CancelingDeliveryMail from '../jobs/CancelingDeliveryMail';
 
 class DeliveryProblemController {
   async index(req, res) {
+    const { page = 1 } = req.query;
     const deliveries = await DeliveryProblem.findAll({
       include: [
         {
@@ -29,6 +30,8 @@ class DeliveryProblemController {
         },
       ],
       attributes: ['id', 'description'],
+      limit: 20,
+      offset: (page - 1) * 20,
     });
 
     return res.json(deliveries);
@@ -36,6 +39,8 @@ class DeliveryProblemController {
 
   async show(req, res) {
     const { deliveryId } = req.params;
+    const { page = 1 } = req.query;
+
     const deliveries = await DeliveryProblem.findAll({
       where: {
         delivery_id: deliveryId,
@@ -60,6 +65,8 @@ class DeliveryProblemController {
         },
       ],
       attributes: ['id', 'description'],
+      limit: 20,
+      offset: (page - 1) * 20,
     });
 
     return res.json(deliveries);

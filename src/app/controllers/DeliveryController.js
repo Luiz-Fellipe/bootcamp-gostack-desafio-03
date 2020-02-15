@@ -1,6 +1,7 @@
 import * as Yup from 'yup';
 import Delivery from '../models/Delivery';
 import Deliveryman from '../models/Deliveryman';
+import File from '../models/File';
 
 import Recipient from '../models/Recipient';
 import Queue from '../../lib/Queue';
@@ -8,7 +9,40 @@ import CreatingDeliveryMail from '../jobs/CreatingDeliveryMail';
 
 class DeliveryController {
   async index(req, res) {
-    const deliveries = await Delivery.findAll();
+    const { page = 1 } = req.query;
+
+    const deliveries = await Delivery.findAll({
+      include: [
+        {
+          model: Deliveryman,
+          as: 'deliveryman',
+          attributes: ['id', 'name'],
+        },
+        {
+          model: Recipient,
+          as: 'recipient',
+          attributes: ['id', 'name'],
+        },
+        {
+          model: File,
+          as: 'signature',
+          attributes: ['id', 'url'],
+        },
+      ],
+      attributes: [
+        'id',
+        'product',
+        'initiated',
+        'finished',
+        'canceled',
+        'start_date',
+        'end_date',
+        'signature_id',
+        'canceled_at',
+      ],
+      limit: 20,
+      offset: (page - 1) * 20,
+    });
     return res.json(deliveries);
   }
 
@@ -102,6 +136,14 @@ class DeliveryController {
     const delivery = await Delivery.findByPk(req.params.id);
     if (!delivery) {
       return res.status(400).json({ error: 'Delivery does not exist ' });
+    }
+
+    if (delivery.signature_id) {
+      await File.destroy({
+        where: {
+          id: delivery.signature_id,
+        },
+      });
     }
 
     await Delivery.destroy({
