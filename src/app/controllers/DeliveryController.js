@@ -1,4 +1,5 @@
 import * as Yup from 'yup';
+import { Op } from 'sequelize';
 import Delivery from '../models/Delivery';
 import Deliveryman from '../models/Deliveryman';
 import File from '../models/File';
@@ -9,9 +10,16 @@ import CreatingDeliveryMail from '../jobs/CreatingDeliveryMail';
 
 class DeliveryController {
   async index(req, res) {
-    const { page = 1 } = req.query;
+    const { page = 1, product } = req.query;
 
     const deliveries = await Delivery.findAll({
+      where: {
+        product: product
+          ? {
+              [Op.like]: `%${product}%`,
+            }
+          : { [Op.ne]: null },
+      },
       include: [
         {
           model: Deliveryman,
@@ -40,6 +48,7 @@ class DeliveryController {
         'signature_id',
         'canceled_at',
       ],
+
       limit: 20,
       offset: (page - 1) * 20,
     });

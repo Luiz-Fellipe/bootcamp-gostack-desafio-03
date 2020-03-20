@@ -6,7 +6,7 @@ import File from '../models/File';
 
 class DeliverymanDeliveryController {
   async index(req, res) {
-    const { page = 1, filter } = req.query;
+    const { page = 1, filter, product } = req.query;
 
     /**
      * Se ele não informar o ele lista todas as entregas, independente do status.
@@ -37,6 +37,11 @@ class DeliverymanDeliveryController {
                       [Op.ne]: null,
                     }
                   : null,
+              product: product
+                ? {
+                    [Op.like]: `%${product}%`,
+                  }
+                : { [Op.ne]: null },
             },
             attributes: [
               'id',
