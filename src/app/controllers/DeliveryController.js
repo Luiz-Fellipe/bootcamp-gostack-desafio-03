@@ -14,6 +14,7 @@ class DeliveryController {
     const { page = 1, product } = req.query;
 
     const response = await Delivery.findAndCountAll({
+      order: [['id', 'DESC']],
       where: {
         product: product
           ? {
