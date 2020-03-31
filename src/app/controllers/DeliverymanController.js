@@ -5,9 +5,10 @@ import File from '../models/File';
 
 class DeliverymanController {
   async index(req, res) {
+    const LIMIT_PER_PAGE = 5;
     const { page = 1, name } = req.query;
 
-    const deliverymen = await Deliveryman.findAll({
+    const response = await Deliveryman.findAndCountAll({
       where: {
         name: name
           ? {
@@ -18,8 +19,8 @@ class DeliverymanController {
             },
       },
       attributes: ['id', 'name', 'email'],
-      limit: 20,
-      offset: (page - 1) * 20,
+      limit: LIMIT_PER_PAGE,
+      offset: (page - 1) * LIMIT_PER_PAGE,
       include: [
         {
           model: File,
@@ -28,6 +29,12 @@ class DeliverymanController {
         },
       ],
     });
+
+    const deliverymen = {
+      deliverymen: response.rows,
+      totalPages: Math.ceil(response.count / LIMIT_PER_PAGE),
+    };
+
     return res.json(deliverymen);
   }
 
