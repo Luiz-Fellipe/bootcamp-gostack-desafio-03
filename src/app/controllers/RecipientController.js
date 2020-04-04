@@ -4,9 +4,10 @@ import Recipient from '../models/Recipient';
 
 class RecipientController {
   async index(req, res) {
+    const LIMIT_PER_PAGE = 5;
     const { page = 1, name } = req.query;
 
-    const recipients = await Recipient.findAll({
+    const response = await Recipient.findAndCountAll({
       where: {
         name: name
           ? {
@@ -16,9 +17,14 @@ class RecipientController {
               [Op.ne]: null,
             },
       },
-      limit: 20,
-      offset: (page - 1) * 20,
+      limit: LIMIT_PER_PAGE,
+      offset: (page - 1) * LIMIT_PER_PAGE,
     });
+
+    const recipients = {
+      recipients: response.rows,
+      totalPages: Math.ceil(response.count / LIMIT_PER_PAGE),
+    };
 
     return res.json(recipients);
   }
