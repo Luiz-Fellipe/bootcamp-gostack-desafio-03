@@ -34,7 +34,7 @@ class RecipientController {
       name: Yup.string().required(),
       street: Yup.string().required(),
       complement: Yup.string().required(),
-      number: Yup.string().required(),
+      number: Yup.string(),
       zip_code: Yup.string().required(),
       uf: Yup.string()
         .required()
