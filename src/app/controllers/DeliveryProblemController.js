@@ -8,8 +8,12 @@ import CancelingDeliveryMail from '../jobs/CancelingDeliveryMail';
 
 class DeliveryProblemController {
   async index(req, res) {
+    const LIMIT_PER_PAGE = 5;
     const { page = 1 } = req.query;
-    const deliveries = await DeliveryProblem.findAll({
+    const response = await DeliveryProblem.findAndCountAll({
+      attributes: ['id', 'description'],
+      limit: LIMIT_PER_PAGE,
+      offset: (page - 1) * LIMIT_PER_PAGE,
       include: [
         {
           model: Delivery,
@@ -29,12 +33,14 @@ class DeliveryProblemController {
           ],
         },
       ],
-      attributes: ['id', 'description'],
-      limit: 20,
-      offset: (page - 1) * 20,
     });
 
-    return res.json(deliveries);
+    const problemDeliveries = {
+      problemDeliveries: response.rows,
+      totalPages: Math.ceil(response.count / LIMIT_PER_PAGE),
+    };
+
+    return res.json(problemDeliveries);
   }
 
   async show(req, res) {
