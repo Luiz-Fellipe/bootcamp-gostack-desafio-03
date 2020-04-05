@@ -8,6 +8,7 @@ class RecipientController {
     const { page = 1, name } = req.query;
 
     const response = await Recipient.findAndCountAll({
+      order: [['id', 'DESC']],
       where: {
         name: name
           ? {
@@ -27,6 +28,25 @@ class RecipientController {
     };
 
     return res.json(recipients);
+  }
+
+  async show(req, res) {
+    const recipient = await Recipient.findByPk(req.params.id, {
+      attributes: [
+        'id',
+        'name',
+        'street',
+        'complement',
+        'uf',
+        'number',
+        'city',
+        'zip_code',
+      ],
+    });
+    if (!recipient) {
+      return res.status(400).json({ error: "recipient don't exist" });
+    }
+    return res.json(recipient);
   }
 
   async store(req, res) {
